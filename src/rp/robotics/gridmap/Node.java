@@ -87,7 +87,7 @@ public class Node<A> {
 	{
 		for (int i = 0; i < connections.size(); i++)
 		{
-			if (connections.get(i).getNeighbour(neighbour) == neighbour)
+			if (connections.get(i).getNeighbour(neighbour) == this)
 			{
 				return true;
 			}

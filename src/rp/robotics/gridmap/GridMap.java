@@ -232,7 +232,9 @@ public class GridMap implements IGridMap {
 
 	@Override
 	public float rangeToObstacleFromGridPosition(int _x, int _y, float _heading) {
-		int i = 0;
+		Pose pose = new Pose(_x*cellSize+xStart ,_y*cellSize+yStart, _heading);
+		return lineMap.range(pose);
+		/*int i = 0;
 		Node<Integer> node = getNode(_x, _y);
 		Node<Integer> neighbour;
 		while (true)
@@ -262,5 +264,6 @@ public class GridMap implements IGridMap {
 		}
 		i += 0.5;
 		return i;
+		*/
 	}
 }

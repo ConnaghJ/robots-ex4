@@ -37,7 +37,7 @@ public class GridMapVisualisation extends LineMapVisualisation {
 		super(_lineMap, _scaleFactor, _flip);
 		m_scaleFactor = _scaleFactor;
 		m_gridMap = _gridMap;
-		xScale = _lineMap.getBoundingRect().getWidth() / (_gridMap.getXSize() -1) ;
+		xScale = _lineMap.getBoundingRect().getWidth() / (_gridMap.getXSize()) ;
 		yScale = _lineMap.getBoundingRect().getHeight()/ (_gridMap.getYSize());
 		xInset = _gridMap.getXOffset();
 		yInset = _gridMap.getYOffset();

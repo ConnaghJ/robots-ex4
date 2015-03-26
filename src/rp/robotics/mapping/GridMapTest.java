@@ -217,6 +217,8 @@ public class GridMapTest {
 
 						if (blocked.contains(to)
 								|| !isManuallyApproved(from, to, invalid)) {
+							boolean valid = map.isValidTransition(from.x,
+									from.y, to.x, to.y);
 							Assert.assertFalse(map.isValidTransition(from.x,
 									from.y, to.x, to.y));
 						} else {

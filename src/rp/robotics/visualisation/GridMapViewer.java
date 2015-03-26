@@ -40,7 +40,7 @@ public class GridMapViewer {
 		RPLineMap lineMap = MapUtils.create2015Map1();
 
 		// grid map dimensions for this line map
-		int xJunctions = 13;
+		int xJunctions = 12;
 		int yJunctions = 8;
 		float junctionSeparation = 30;
 
@@ -72,7 +72,7 @@ public class GridMapViewer {
 
 		// view the map with 2 pixels as 1 cm
 		// flip the y axis to get RH rule correct although it's ugly
-		boolean flipYAxis = false;
+		boolean flipYAxis = true;
 		GridMapVisualisation mapVis = new GridMapVisualisation(gridMap,
 				lineMap, 2, flipYAxis);
 
