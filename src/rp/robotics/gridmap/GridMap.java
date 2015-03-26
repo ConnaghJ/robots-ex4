@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import lejos.geom.Point;
+import lejos.robotics.navigation.Pose;
 import rp.robotics.mapping.IGridMap;
 import rp.robotics.mapping.RPLineMap;
 
@@ -30,97 +31,7 @@ public class GridMap implements IGridMap {
 		this.yStart = yStart;
 		this.cellSize = cellSize;
 		this.lineMap = linemap;
-		/*
-		int [] [] nicksGraph = {//9x6 graph
-				{0,0,1,0,0,1}, 
-				{0,1,0,0,1,1,0,2}, 
-				{0,2,0,3,0,1}, 
-				{0,3,0,2,0,4}, 
-				{0,4,0,3,0,5}, 
-				{0,5,0,6,1,5,0,4}, 
-				{0,6,1,6,0,5}, 
-				{1,0,0,0,1,1,2,0}, 
-				{1,1,1,2,2,1,1,0,0,1}, 
-				{1,2,2,2,1,1,1,3}, 
-				{1,3,1,2,1,4,2,3}, 
-				{1,4,2,4,1,5,1,3}, 
-				{1,5,1,4,2,5,1,6,0,5}, 
-				{1,6,0,6,1,5,2,6}, 
-				{2,0,3,0,2,1,1,0}, 
-				{2,1,2,2,1,1,2,0,3,1}, 
-				{2,2,1,2,2,1,2,3,3,2}, 
-				{2,3,2,2,2,4,3,3,1,3}, 
-				{2,4,1,4,2,5,2,3,3,4}, 
-				{2,5,2,4,1,5,2,6,3,5}, 
-				{2,6,3,6,2,5,1,6}, 
-				{3,0,2,0,3,1}, 
-				{3,1,3,0,4,1,2,1,3,2}, 
-				{3,2,2,2,4,2,3,1}, 
-				{3,3,2,3,3,4}, 
-				{3,4,2,4,3,3}, 
-				{3,5,3,6,2,5,4,5}, 
-				{3,6,2,6,3,5}, 
-				{4,0}, 
-				{4,1,4,2,5,1,3,1}, 
-				{4,2,4,1,5,2,3,2}, 
-				{4,3}, 
-				{4,4}, 
-				{4,5,5,5,3,5}, 
-				{4,6}, 
-				{5,0}, 
-				{5,1,4,1,5,2,6,1}, 
-				{5,2,4,2,5,1,6,2}, 
-				{5,3}, 
-				{5,4}, 
-				{5,5,4,5,6,5}, 
-				{5,6}, 
-				{6,0,7,0,6,1}, 
-				{6,1,6,0,5,1,6,2,7,1}, 
-				{6,2,5,2,6,1,7,2}, 
-				{6,3,7,3,6,4}, 
-				{6,4,6,3,7,4}, 
-				{6,5,5,5,6,6,7,5}, 
-				{6,6,7,6,6,5}, 
-				{7,0,6,0,7,1,8,0}, 
-				{7,1,8,1,7,0,6,1,7,2}, 
-				{7,2,7,3,8,2,6,2,7,1}, 
-				{7,3,6,3,7,2,7,4,8,3}, 
-				{7,4,7,3,8,4,6,4,7,5}, 
-				{7,5,8,5,7,6,7,4,6,5}, 
-				{7,6,6,6,7,5,8,6}, 
-				{8,0,8,1,7,0,9,0}, 
-				{8,1,8,2,9,1,7,1,8,0}, 
-				{8,2,8,1,7,2,8,3}, 
-				{8,3,8,2,7,3,8,4}, 
-				{8,4,8,5,8,3,7,4}, 
-				{8,5,9,5,8,4,7,5,8,6}, 
-				{8,6,8,5,7,6,9,6}, 
-				{9,0,9,1,8,0}, 
-				{9,1,8,1,9,2,9,0}, 
-				{9,2,9,1,9,3}, 
-				{9,3,9,2,9,4}, 
-				{9,4,9,5,9,3}, 
-				{9,5,8,5,9,4,9,6}, 
-				{9,6,9,5,8,6} 
-				};
-		//*
-		for (int i = 0; i < nicksGraph.length; i++)
-		{
-			
-			map.add(new Node<Integer>(nicksGraph[i][0], nicksGraph[i][1]));
-			
-		}
-		for (int i = 0; i < nicksGraph.length; i++)
-		{
-			if (nicksGraph[i].length > 2)
-			{
-				for (int j = 1; j < (nicksGraph[i].length)/2; j++)
-				{
-					addConnection(nicksGraph[i][0], nicksGraph[i][1], nicksGraph[i][2*j], nicksGraph[i][2*j+1]);
-				}
-			}
-		}
-		*/
+		
 		for(int i =0; i< xSize; i++)
 		{
 			for(int j =0 ; j< ySize; j++)
@@ -130,6 +41,18 @@ public class GridMap implements IGridMap {
 					addToMap(new Node<Integer>(i,j));
 				}
 				
+			}
+		}
+		for(int i=0; i< xSize;i++)
+		{
+			for(int j=0;j<ySize;j++)
+			{
+				if(isValidGridPosition(i,j))
+				{	
+					addConnection(i,j,i,j+1);
+					addConnection(i,j,i+1,j);
+					
+				}
 			}
 		}
 		
@@ -155,10 +78,27 @@ public class GridMap implements IGridMap {
 	//returns false if connection cannot be added
 	public boolean addConnection(int x1, int y1, int x2, int y2)
 	{
-		if (!onGrid(x1, y1) && !onGrid(x2, y2))
+		float heading;
+		if(y1-y2 != 0)
+		{
+			heading = (float) (90.0*(y2-y1));
+		}else{
+			if(x1-x2 == -1)
+			{
+				heading = (float)0.0;
+			}else
+			{
+				heading = (float) 180.0;
+			}
+		}
+		Pose pose = new Pose(x1*cellSize +xStart, y1*cellSize + xStart, heading );
+		float range = lineMap.range(pose);
+		if (!onGrid(x1, y1) || !onGrid(x2, y2))
 		{
 			return false;
-		} 
+		} else if( lineMap.range(pose) < cellSize && lineMap.range(pose) >-1 ) {
+			return false;
+		}
 		Node<Integer> nodeA = getNode(x1, y1);
 		Node<Integer> nodeB = getNode(x2, y2);
 		new Connection(nodeA, nodeB);//automatically assigns references of itself to nodeA and nodeB

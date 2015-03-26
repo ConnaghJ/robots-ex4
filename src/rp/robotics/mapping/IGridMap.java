@@ -1,5 +1,6 @@
 package rp.robotics.mapping;
 
+import rp.robotics.gridmap.Node;
 import lejos.geom.Point;
 
 /***
@@ -87,4 +88,5 @@ public interface IGridMap {
 	
 	public float getXOffset();
 	public float getYOffset();
+	public Node<Integer> getNode(int _x, int _y);
 }

@@ -3,9 +3,12 @@ package rp.robotics.visualisation;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+
 
 import lejos.geom.Point;
 import lejos.robotics.mapping.LineMap;
+import rp.robotics.gridmap.Node;
 import rp.robotics.mapping.IGridMap;
 
 /***
@@ -34,7 +37,7 @@ public class GridMapVisualisation extends LineMapVisualisation {
 		super(_lineMap, _scaleFactor, _flip);
 		m_scaleFactor = _scaleFactor;
 		m_gridMap = _gridMap;
-		xScale = _lineMap.getBoundingRect().getWidth() / (_gridMap.getXSize() -_scaleFactor) ;
+		xScale = _lineMap.getBoundingRect().getWidth() / (_gridMap.getXSize() -1) ;
 		yScale = _lineMap.getBoundingRect().getHeight()/ (_gridMap.getYSize());
 		xInset = _gridMap.getXOffset();
 		yInset = _gridMap.getYOffset();
@@ -46,12 +49,22 @@ public class GridMapVisualisation extends LineMapVisualisation {
 
 	private void connectToNeighbour(Graphics2D _g2, int _x, int _y, int _dx,int _dy) 
 	{
-		if (m_gridMap.isValidTransition(_x, _y, _x + _dx, _y + _dy)) 
+		Node<Integer> n1 = m_gridMap.getNode(_x,_y);
+		if(m_gridMap.isValidGridPosition(_x+_dx, _y+_dy))
 		{
-			Point p1 = m_gridMap.getCoordinatesOfGridPosition((int)(_x*xScale),(int)( _y*yScale));
-			Point p2 = m_gridMap.getCoordinatesOfGridPosition((int)((_x + _dx)*xScale),(int)(( _y + _dy)*yScale));
-			renderLine(p1, p2, _g2);
+			Node<Integer> n2 = m_gridMap.getNode(_x+_dx,_y+_dy);
+			for(int i=0; i < n1.getConnections().size(); i++)
+			{
+				if (n1.getConnections().get(i).getNeighbour(n1) == n2 )
+				{
+					Point p1 = m_gridMap.getCoordinatesOfGridPosition((int)(_x*xScale+xInset),(int)( _y*yScale+yInset));
+					Point p2 = m_gridMap.getCoordinatesOfGridPosition((int)((_x+_dx)*xScale+xInset),(int)(( _y + _dy)*yScale+yInset));
+					renderLine(p1, p2, _g2);
+				}
+			}
 		}
+		
+		
 
 	}
 

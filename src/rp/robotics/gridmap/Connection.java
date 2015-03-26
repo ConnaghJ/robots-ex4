@@ -35,6 +35,7 @@ public class Connection {
 		return temp;
 	}
 	
+	
 	/** 
 	 * Given that one node is known, this method can be used to find the other
 	 *  

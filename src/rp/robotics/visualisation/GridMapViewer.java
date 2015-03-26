@@ -40,7 +40,7 @@ public class GridMapViewer {
 		RPLineMap lineMap = MapUtils.create2015Map1();
 
 		// grid map dimensions for this line map
-		int xJunctions = 14;
+		int xJunctions = 13;
 		int yJunctions = 8;
 		float junctionSeparation = 30;
 
