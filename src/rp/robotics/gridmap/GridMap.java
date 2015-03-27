@@ -92,7 +92,6 @@ public class GridMap implements IGridMap {
 			}
 		}
 		Pose pose = new Pose(x1*cellSize +xStart, y1*cellSize + xStart, heading );
-		float range = lineMap.range(pose);
 		if (!onGrid(x1, y1) || !onGrid(x2, y2))
 		{
 			return false;
@@ -198,6 +197,7 @@ public class GridMap implements IGridMap {
 
 	@Override
 	public boolean isValidGridPosition(int _x, int _y) {
+		
 		return _x >= 0 && _y >= 0 && _x < XSize && _y < YSize && !isObstructed(_x, _y);
 	}
 
@@ -227,7 +227,36 @@ public class GridMap implements IGridMap {
 	
 	@Override
 	public boolean isValidTransition(int _x1, int _y1, int _x2, int _y2) {
-		return BreadthFirstNodeSearch(_x1, _y1, _x2, _y2);
+		if(!isValidGridPosition(_x1,_y1) || !isValidGridPosition(_x2,_y2))
+		{
+			return false;
+		} else if(_x1 == _x2 && _y1 ==_y2)
+		{
+			return true;
+		}
+		
+		float heading;
+		if(_y1-_y2 != 0)
+		{
+			heading = (float) (90.0*(_y2-_y1));
+		}else{
+			if(_x1-_x2 == -1)
+			{
+				heading = (float)0.0;
+			}else
+			{
+				heading = (float) 180.0;
+			}
+		}
+		Pose pose = new Pose(_x1*cellSize +xStart, _y1*cellSize + xStart, heading );
+		float range = lineMap.range(pose);
+		if(range >cellSize || range == -1)
+		{
+			return true;
+		} else {
+			return false;
+		}
+		//return BreadthFirstNodeSearch(_x1, _y1, _x2, _y2);
 	}
 
 	@Override

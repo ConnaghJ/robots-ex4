@@ -1,10 +1,14 @@
 package rp.robotics.visualisation;
 
+import java.util.ArrayDeque;
+
 import javax.swing.JFrame;
 
 import rp.robotics.mapping.Heading;
 import rp.robotics.mapping.IGridMap;
+import rp.robotics.gridmap.*;
 import rp.robotics.mapping.MapUtils;
+import rp.robotics.gridmap.PathFinder;
 import rp.robotics.gridmap.GridMap;
 import rp.robotics.mapping.RPLineMap;
 
@@ -72,7 +76,7 @@ public class GridMapViewer {
 
 		// view the map with 2 pixels as 1 cm
 		// flip the y axis to get RH rule correct although it's ugly
-		boolean flipYAxis = true;
+		boolean flipYAxis = false;
 		GridMapVisualisation mapVis = new GridMapVisualisation(gridMap,
 				lineMap, 2, flipYAxis);
 
@@ -81,6 +85,14 @@ public class GridMapViewer {
 		frame.setSize(800, 600);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		PathFinder path = new PathFinder((GridMap) gridMap);
+		
+		ArrayDeque<Node<Integer>> paths = path.BreadthFirstSearch(1, 1, 9, 5);
+		while (!paths.isEmpty())
+		{
+			System.out.println(paths.pop().toString());
+		}
+		
 	}
 
 	/**
